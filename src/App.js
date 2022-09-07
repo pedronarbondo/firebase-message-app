@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import { initializeApp } from "firebase/app";
 
@@ -9,6 +9,7 @@ import {
   signInWithPopup,
   signOut,
 } from "firebase/auth";
+
 import {
   getFirestore,
   collection,
@@ -21,12 +22,13 @@ import {
   updateDoc,
   doc,
   serverTimestamp,
+  getDocs,
 } from "firebase/firestore";
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
-initializeApp({
+const app = initializeApp({
   apiKey: "AIzaSyCSrpOw6MKw7iCIdvTsqaHy3O39yrP4y3I",
   authDomain: "fir-message-app-603d9.firebaseapp.com",
   projectId: "fir-message-app-603d9",
@@ -35,6 +37,8 @@ initializeApp({
   appId: "1:365677646337:web:19d5afebe9c1f44b11e600",
   measurementId: "G-C39E3X1S2K",
 });
+
+const db = getFirestore(app);
 
 const auth = getAuth();
 const provider = new GoogleAuthProvider();
@@ -54,18 +58,8 @@ function googlePopup() {
     });
 }
 
-function SignIn() {
-  return <button onClick={googlePopup}>Sign in with Google</button>;
-}
 function signOutUser() {
   signOut(auth);
-}
-function SignOut() {
-  return (
-    <button className="logOutButton" onClick={signOutUser}>
-      SIGN OUT
-    </button>
-  );
 }
 
 function getProfilePicUrl() {
@@ -79,7 +73,19 @@ function getUserName() {
   return auth.currentUser.displayName;
 }
 
-function Header() {
+const SignIn = () => {
+  return <button onClick={googlePopup}>Sign in with Google</button>;
+};
+
+const SignOut = () => {
+  return (
+    <button className="logOutButton" onClick={signOutUser}>
+      SIGN OUT
+    </button>
+  );
+};
+
+const Header = () => {
   return (
     <div className="header">
       <img className="userPhoto" src={`${getProfilePicUrl()}`} />
@@ -87,11 +93,96 @@ function Header() {
       <SignOut />
     </div>
   );
-}
+};
+
+const SignedInUser = () => {
+  const [message, setMessage] = useState("");
+
+  const dummy = useRef();
+  function updateMessage(e) {
+    setMessage(e.target.value);
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    try {
+      await addDoc(collection(db, "messages"), {
+        name: getUserName(),
+        text: message,
+        profilePicUrl: getProfilePicUrl(),
+        timestamp: serverTimestamp(),
+        uid: auth.currentUser.uid,
+      });
+    } catch (err) {
+      console.log("Error writing new message to Firebase Database", err);
+    }
+    setMessage("");
+    dummy.current.scrollIntoView({ behavior: "smooth" });
+  }
+  return (
+    <div className="main">
+      <Header />
+      <ChatRoom />
+      <div className="formContainer">
+        <form>
+          <input
+            className="sendInput"
+            onChange={(e) => updateMessage(e)}
+            value={message}
+            placeholder="Say something nice"
+          ></input>
+          <button className="sendButton" onClick={handleSubmit}>
+            SEND
+          </button>
+        </form>
+      </div>
+
+      <div ref={dummy}></div>
+    </div>
+  );
+};
+
+const ChatRoom = () => {
+  const messagesRef = query(
+    collection(db, "messages"),
+    orderBy("timestamp"),
+    limit(30)
+  );
+
+  const [messagesText] = useCollectionData(messagesRef);
+
+  const mappedMessages = messagesText?.map((message) => (
+    <ChatMessage
+      key={message.timestamp}
+      message={message.text}
+      photoUrl={message.profilePicUrl}
+      name={message.name}
+    />
+  ));
+
+  return <>{mappedMessages}</>;
+};
+
+const ChatMessage = (props) => {
+  const { message, uid, photoUrl, name } = props;
+  const messageClass = uid === auth.currentUser.uid ? "sent" : "received";
+  return (
+    <div className={`message ${messageClass}`}>
+      <div>
+        <img className="messagePhoto" src={photoUrl} />
+      </div>
+      <div>
+        <p className="messageUser">{name}</p>
+        <p className="messageText">{message}</p>
+      </div>
+    </div>
+  );
+};
+
 function App() {
   const [user] = useAuthState(auth);
 
-  return <div className="App">{user ? <Header /> : <SignIn />}</div>;
+  return <div className="App">{user ? <SignedInUser /> : <SignIn />}</div>;
 }
 
 export default App;

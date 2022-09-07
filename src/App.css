@@ -1,3 +1,6 @@
+body {
+  background-color: rgb(71, 71, 227);
+}
 
 .header {
   width: 100%;
@@ -27,4 +30,73 @@
   border-radius: 50%;
   overflow: hidden;
   background-color: blue;
+}
+
+.messagePhoto {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 10px;
+}
+
+.messageText {
+  min-width: 500px;
+  height: 50px;
+  border: 1px solid grey;
+  background-color: lightgray;
+  border-radius: 6px;
+}
+.messageUser{
+  color: orange;
+  background-color: black;
+  opacity: 0.3;
+  font-weight: bold;
+  border: 1px solid black;
+  border-radius: 6px;
+  width: fit-content;
+  padding: 1px 4px;
+}
+
+.formContainer { 
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: rgb(92, 90, 90);
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+form {
+  display: flex;
+}
+
+.sendButton {
+ cursor: pointer;
+ border: none;
+ background-color: rgb(137, 55, 137);
+ width: 80px;
+ height: 80px;
+ color: white;
+ font-weight: bold;
+ font-size: 1.2rem;
+
+}
+.sendInput {
+  width: 400px;
+}
+
+.main{
+  position: relative;
+}
+
+.sent {
+  position: relative;
+  left: 55%;
 }
