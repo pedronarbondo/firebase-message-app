@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/firebase-message-app/static/css/main.b08399df.css",
+    "main.js": "/firebase-message-app/static/js/main.99c499e8.js",
+    "index.html": "/firebase-message-app/index.html",
+    "main.b08399df.css.map": "/firebase-message-app/static/css/main.b08399df.css.map",
+    "main.99c499e8.js.map": "/firebase-message-app/static/js/main.99c499e8.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b08399df.css",
+    "static/js/main.99c499e8.js"
+  ]
+}
