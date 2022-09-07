@@ -74,7 +74,11 @@ function getUserName() {
 }
 
 const SignIn = () => {
-  return <button onClick={googlePopup}>Sign in with Google</button>;
+  return (
+    <button className="signInButton" onClick={googlePopup}>
+      Sign in with Google
+    </button>
+  );
 };
 
 const SignOut = () => {
@@ -143,11 +147,7 @@ const SignedInUser = () => {
 };
 
 const ChatRoom = () => {
-  const messagesRef = query(
-    collection(db, "messages"),
-    orderBy("timestamp"),
-    limit(30)
-  );
+  const messagesRef = query(collection(db, "messages"), orderBy("timestamp"));
 
   const [messagesText] = useCollectionData(messagesRef);
 
@@ -157,6 +157,7 @@ const ChatRoom = () => {
       message={message.text}
       photoUrl={message.profilePicUrl}
       name={message.name}
+      uid={message.uid}
     />
   ));
 

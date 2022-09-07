@@ -94,9 +94,24 @@ form {
 
 .main{
   position: relative;
+  padding-bottom: 80px;
 }
 
 .sent {
   position: relative;
   left: 55%;
+}
+
+.signInButton {
+  position: absolute;
+  left: 45%;
+  right: 50%;
+  top: 50%;
+  bottom: 50%;
+  width: 200px;
+  height: 70px;
+  border-radius: 6px;
+  color: white;
+  background-color: rgb(31, 31, 169);
+  font-weight: bold;
 }
